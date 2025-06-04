@@ -36,7 +36,7 @@ def shorten_url():
     db.session.add(new_url)
     db.session.commit()
 
-    return jsonify(short_url=f"http://localhost:5001/{short_id}")
+    return jsonify(short_url=f"https://url-shortener-2-0be1.onrender.com/{short_id}")
 
 @app.route('/<short_id>')
 def redirect_url(short_id):
