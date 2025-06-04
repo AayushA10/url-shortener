@@ -2,14 +2,22 @@ from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import shortuuid
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'   # DB file banega urls.db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'   # SQLite file: urls.db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Get base URL from environment variables
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')  # default localhost agar env nahi mila
 
 # Database Model
 class URL(db.Model):
@@ -36,7 +44,7 @@ def shorten_url():
     db.session.add(new_url)
     db.session.commit()
 
-    return jsonify(short_url=f"https://url-shortener-2-0be1.onrender.com/{short_id}")
+    return jsonify(short_url=f"{BASE_URL}/{short_id}")
 
 @app.route('/<short_id>')
 def redirect_url(short_id):
@@ -49,4 +57,3 @@ def redirect_url(short_id):
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
-
